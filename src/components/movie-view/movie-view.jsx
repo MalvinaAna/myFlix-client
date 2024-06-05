@@ -41,10 +41,6 @@ export const MovieView= ({ movies }) => {
         <span>{movie.death}</span>
       </div>
       <div>
-        <span>Actors: </span>
-        <span>{movie.actors}</span>
-      </div>
-      <div>
         <span>Featured: </span>
         <span>{movie.featured}</span>
       </div>

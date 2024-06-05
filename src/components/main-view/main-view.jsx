@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { MovieCard } from "../movie-card/movie-card";
 import { MovieView } from "../movie-view/movie-view";
 import { LoginView } from "../login-view/login-view";
@@ -9,27 +9,33 @@ import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { NavigationBar } from "../navigation-bar/navigation-bar";
 import ProfileView from "../profile-view/profile-view";
 
-export const MainView= () => {
-  const storedUser= JSON.parse(localStorage.getItem("user"));
-  const storedToken= localStorage.getItem("token");
+export const MainView = () => {
+  let storedUser;
+  try {
+    storedUser = JSON.parse(localStorage.getItem("user"));
+  } catch (error) {
+    console.error("Error parsing user from localStorage:", error);
+    storedUser = null;
+  }
+  const storedToken = localStorage.getItem("token");
 
-  const [user, setUser]= useState(storedUser? storedUser: null);
-  const [token, setToken]= useState(storedToken? storedToken : null);
+  const [user, setUser] = useState(storedUser ? storedUser : null);
+  const [token, setToken] = useState(storedToken ? storedToken : null);
 
-  const [movies, setMovies]= useState([]);
+  const [movies, setMovies] = useState([]);
 
-  useEffect(()=> {
+  useEffect(() => {
     if (!token) {
       return;
     }
 
     fetch("https://my-movieflix-e95b2c0e9dda.herokuapp.com/movies", {
-      headers: { Authorization: `Bearer ${token}` }
+      headers: { Authorization: `Bearer ${token}` },
     })
       .then((response) => response.json())
       .then((movies) => {
         console.log("Movies: ", movies);
-        const moviesFromApi= movies.map((movie) => {
+        const moviesFromApi = movies.map((movie) => {
           return {
             image: movie.ImagePath,
             id: movie._id,
@@ -41,7 +47,7 @@ export const MainView= () => {
             birth: movie.Director.Birth,
             death: movie.Director.Death,
             actors: movie.Actors,
-            featured: movie.Featured
+            featured: movie.Featured,
           };
         });
 
@@ -83,10 +89,11 @@ export const MainView= () => {
                   <Navigate to="/" />
                 ) : (
                   <Col md={5}>
-                    <LoginView onLoggedIn={(user, token) => {
-                      setUser(user);
-                      setToken(token);
-                     }} 
+                    <LoginView
+                      onLoggedIn={(user, token) => {
+                        setUser(user);
+                        setToken(token);
+                      }}
                     />
                   </Col>
                 )}
@@ -119,12 +126,12 @@ export const MainView= () => {
                   <Col>The list is empty!</Col>
                 ) : (
                   <>
-                  {movies.map((movie) => (
-                    <Col className="mb-4" key={movie.id} md={3}>
-                      <MovieCard movie={movie} />
-                    </Col>
-                  ))}
-                </>
+                    {movies.map((movie) => (
+                      <Col className="mb-4" key={movie.id} md={3}>
+                        <MovieCard movie={movie} />
+                      </Col>
+                    ))}
+                  </>
                 )}
               </>
             }
@@ -137,7 +144,8 @@ export const MainView= () => {
                   <Navigate to="/login" replace />
                 ) : (
                   <Col>
-                    <ProfileView />
+                    {/* Pass user and token as props to ProfileView */}
+                    <ProfileView user={user} token={token} movies={movies} />
                   </Col>
                 )}
               </>
@@ -148,3 +156,5 @@ export const MainView= () => {
     </BrowserRouter>
   );
 };
+
+ 
