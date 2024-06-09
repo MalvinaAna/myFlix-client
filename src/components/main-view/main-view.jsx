@@ -21,8 +21,8 @@ export const MainView = () => {
 
   const [user, setUser] = useState(storedUser ? storedUser : null);
   const [token, setToken] = useState(storedToken ? storedToken : null);
-
   const [movies, setMovies] = useState([]);
+  const [searchQuery, setSearchQuery] = useState(""); // State to manage search query
 
   useEffect(() => {
     if (!token) {
@@ -54,6 +54,11 @@ export const MainView = () => {
         setMovies(moviesFromApi);
       });
   }, [token]);
+
+  // Filter movies based on the search query
+  const filteredMovies = movies.filter((movie) =>
+    movie.title.toLowerCase().includes(searchQuery.toLowerCase())
+  );
 
   return (
     <BrowserRouter>
@@ -126,7 +131,16 @@ export const MainView = () => {
                   <Col>The list is empty!</Col>
                 ) : (
                   <>
-                    {movies.map((movie) => (
+                    <Col md={12}>
+                      <input
+                        type="text"
+                        placeholder="Search for a movie..."
+                        value={searchQuery}
+                        onChange={(e) => setSearchQuery(e.target.value)}
+                        style={{ width: "100%", padding: "10px", margin: "20px 0" }}
+                      />
+                    </Col>
+                    {filteredMovies.map((movie) => (
                       <Col className="mb-4" key={movie.id} md={3}>
                         <MovieCard movie={movie} />
                       </Col>
@@ -156,5 +170,3 @@ export const MainView = () => {
     </BrowserRouter>
   );
 };
-
- 
