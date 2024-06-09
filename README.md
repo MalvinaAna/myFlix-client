@@ -36,6 +36,6 @@ Using React, I built the client-side for my myFlix app. The server-side and API 
 - Allows existing users to deregister
 
 ## Deployment
-The app is deployed on Netlify. You can view it [here](#).
+The app is deployed on Netlify. You can view it [here](https://myflix-movies-application.netlify.app/signup).
 
 
